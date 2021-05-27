@@ -4,6 +4,7 @@ import time
 from crypting import Encryption
 
 
+# информация, с которой работает сервер
 class Encryption_Data:
 
     def __init__(self):
@@ -25,7 +26,7 @@ enc_data = Encryption_Data()
 enc = Encryption()
 
 sock = socket.socket()
-
+# задаем настройки сервера(что слушаем)
 port = input('Enter port: ')
 sock.bind(('', int(port)))
 
@@ -37,6 +38,7 @@ while True:
     print()
 
     while True:
+        # если получили необходимые данные от клиента
         if enc_data.A != 0 and enc_data.p != 0 and enc_data.g != 0:
             print(f'Отправили ключ B клиенту = {enc_data.public_key_B()}')
             print(f'Сформировали ключ K: {enc_data.private_key_K()}')
@@ -47,7 +49,7 @@ while True:
             data = conn.recv(1024).decode("utf8")
         except ConnectionResetError:
             break
-
+        # формируем ответ
         if data[:6] == 'ключ A':
             print(data)
             enc_data.A = int(data.split(' ')[2])
@@ -62,10 +64,7 @@ while True:
             data = enc.Enc(data, enc_data.private_key_K())
             new_data = enc.Enc("Вашим сообщением было - " + data, enc_data.private_key_K())
 
-            # ВЫХОД КЛИЕНТА
-            if data == "" or data == "exit":
-                break
-            elif data == "stop":
+            if data == "stop":
                 break
             else:
 
